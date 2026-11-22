@@ -1,43 +1,43 @@
 /* FridgeWise — "fresh & friendly" design. Mobile-first, light & dark. */
 :root {
-  --bg: #fbf8f1;
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface-2: #f3efe4;
-  --text: #22302a;
-  --muted: #6b766f;
-  --border: #ebe5d6;
-  --brand: #2e8b57;
-  --brand-strong: #237045;
+  --surface-2: #eef4fc;
+  --text: #14233d;
+  --muted: #5f6f86;
+  --border: #dbe6f5;
+  --brand: #1e63d6;
+  --brand-strong: #154aa8;
   --brand-ink: #ffffff;
-  --brand-soft: #e3f3e8;
-  --accent: #ff8a4c;
-  --accent-soft: #fff0e6;
+  --brand-soft: #e6effc;
+  --accent: #3b8cf0;
+  --accent-soft: #eaf3fe;
   --green: #2e8b57;
   --green-soft: #e3f3e8;
   --orange: #e07a10;
   --orange-soft: #fff1dc;
   --red: #dc4444;
   --red-soft: #fde7e5;
-  --shadow-sm: 0 1px 2px rgba(60, 50, 20, .06);
-  --shadow: 0 2px 4px rgba(60, 50, 20, .04), 0 8px 24px rgba(60, 50, 20, .08);
+  --shadow-sm: 0 1px 2px rgba(20, 50, 110, .06);
+  --shadow: 0 2px 4px rgba(20, 50, 110, .04), 0 8px 24px rgba(20, 50, 110, .08);
   --radius: 20px;
   --radius-sm: 14px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #121714;
-    --surface: #1b221e;
-    --surface-2: #242d28;
-    --text: #eaf0ec;
-    --muted: #9eaaa3;
-    --border: #2d3832;
-    --brand: #4cc07f;
-    --brand-strong: #6ad497;
-    --brand-ink: #0b1a11;
-    --brand-soft: #1d3428;
-    --accent: #ff9e6a;
-    --accent-soft: #3a2619;
+    --bg: #0d1524;
+    --surface: #152036;
+    --surface-2: #1d2a44;
+    --text: #eaf1fb;
+    --muted: #9aabc4;
+    --border: #26365a;
+    --brand: #5b9bf5;
+    --brand-strong: #7fb2fa;
+    --brand-ink: #08142a;
+    --brand-soft: #1a2d52;
+    --accent: #6fb0ff;
+    --accent-soft: #19304f;
     --green: #5ccb8c;
     --green-soft: #1c3226;
     --orange: #f3a352;
@@ -99,7 +99,7 @@ main { padding: 0 16px; }
   background: linear-gradient(135deg, var(--brand) 0%, var(--brand-strong) 100%); color: var(--brand-ink);
   position: relative; overflow: hidden;
 }
-.hero.hero--alert { background: linear-gradient(135deg, #ff9a5a 0%, #f0702a 100%); color: #fff; }
+.hero.hero--alert { background: linear-gradient(135deg, #2a4f9e 0%, #0f2a66 100%); color: #fff; }
 .hero::after {
   content: ""; position: absolute; right: -40px; top: -40px; width: 150px; height: 150px;
   border-radius: 50%; background: rgba(255,255,255,.12);
@@ -115,7 +115,7 @@ main { padding: 0 16px; }
 .hero-pill small { font-weight: 600; opacity: .85; }
 .hero-btn {
   width: 100%; border: 0; border-radius: 14px; padding: 13px 16px; font-weight: 800; font-size: 16px;
-  background: #fff; color: #1f2a24; display: flex; justify-content: center; align-items: center; gap: 8px;
+  background: #fff; color: #14233d; display: flex; justify-content: center; align-items: center; gap: 8px;
   position: relative; z-index: 1;
 }
 .hero-btn:active { transform: scale(.985); }
@@ -297,7 +297,7 @@ dialog.sheet {
 }
 dialog.sheet[open] { animation: up .25s cubic-bezier(.2,.8,.2,1); }
 @keyframes up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
-dialog.sheet::backdrop { background: rgba(20, 25, 22, .45); }
+dialog.sheet::backdrop { background: rgba(10, 20, 45, .45); }
 @media (min-width: 600px) {
   dialog.sheet { margin: auto; border-radius: 26px; }
   .grabber { display: none; }
@@ -354,7 +354,7 @@ dialog.sheet::backdrop { background: rgba(20, 25, 22, .45); }
 .voice-wrap { padding: 10px 18px calc(18px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
 .orb {
   width: 120px; height: 120px; margin: 10px auto 8px; border-radius: 50%; display: grid; place-items: center;
-  font-size: 44px; background: radial-gradient(circle at 35% 30%, #7fe0a8, var(--brand) 60%, var(--brand-strong));
+  font-size: 44px; background: radial-gradient(circle at 35% 30%, #9cc4ff, var(--brand) 60%, var(--brand-strong));
   box-shadow: 0 12px 30px color-mix(in srgb, var(--brand) 40%, transparent); transition: transform .2s, filter .2s;
 }
 .orb[data-state="idle"] { filter: saturate(.6); }
@@ -362,7 +362,7 @@ dialog.sheet::backdrop { background: rgba(20, 25, 22, .45); }
 .orb[data-state="listening"] { animation: breathe 2s ease-in-out infinite; }
 .orb[data-state="thinking"] { animation: breathe 0.9s ease-in-out infinite; filter: hue-rotate(40deg); }
 .orb[data-state="speaking"] {
-  background: radial-gradient(circle at 35% 30%, #ffc49a, var(--accent) 60%, #e0622a);
+  background: radial-gradient(circle at 35% 30%, #bfdcff, var(--accent) 60%, #1e63d6);
   animation: talk .5s ease-in-out infinite alternate;
 }
 .orb[data-state="error"] { background: radial-gradient(circle at 35% 30%, #ffb3b3, var(--red) 70%); filter: none; }
@@ -390,8 +390,8 @@ dialog.sheet::backdrop { background: rgba(20, 25, 22, .45); }
   display: flex; gap: 14px; align-items: center; font-size: 14px; font-weight: 700;
   box-shadow: var(--shadow); max-width: calc(100vw - 32px); animation: up .2s ease;
 }
-.toast button { background: none; border: 0; color: #7ee0a6; font-weight: 800; }
-@media (prefers-color-scheme: dark) { .toast button { color: #1f6b40; } }
+.toast button { background: none; border: 0; color: #8fbcff; font-weight: 800; }
+@media (prefers-color-scheme: dark) { .toast button { color: #1e63d6; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

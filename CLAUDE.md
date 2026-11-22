@@ -35,11 +35,11 @@ Script load order matters: `data.js` → `storage.js` → `logic.js` → `app.js
 - **Retention ideas (§7.3):** autocomplete with default expiry dates, a recipe hint after 2–3 items, one-tap ✓ / −1 with Undo, and a gentle reminder after 3 days without updates. Keep these when changing the UI.
 
 ## Design system ("fresh & friendly")
-- **Palette:** warm cream background (`--bg`), white cards, green brand (`--brand`), orange accent (`--accent`). Status colours are `--green`, `--orange`, `--red`, each with a `-soft` tint. Always use the variables, never raw colours, so dark mode keeps working.
+- **Palette:** blue & white — white background (`--bg`) and cards, blue brand (`--brand`), lighter blue accent (`--accent`). Status colours are `--green`, `--orange`, `--red`, each with a `-soft` tint. Always use the variables, never raw colours, so dark mode keeps working.
 - **Shape:** rounded corners (`--radius` 20px, `--radius-sm` 14px), soft shadows (`--shadow`, `--shadow-sm`), Nunito at weights 600–800.
 - **Icons:** emoji only. Use `emojiFor(name, category)` in `app.js`, which falls back from product to category to 🛒. Give every new product or recipe an emoji in the maps in `data.js`.
 - **Patterns:**
-  - Home screen hero card: orange (`hero--alert`) when items expire within 3 days, green otherwise. Its button opens the Cook screen.
+  - Home screen hero card: deep navy (`hero--alert`) when items expire within 3 days, blue otherwise. Its button opens the Cook screen.
   - Product rows: emoji tile with a status dot, a badge, and −1 / ✓ actions.
   - Add/edit form: a bottom sheet with tap-to-fill tiles, a quantity stepper and quick expiry chips.
   - Recipe cards: emoji, match ring (`.ring` with `--p`), have/need chip lists, and collapsible steps.
