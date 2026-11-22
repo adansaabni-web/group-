@@ -495,7 +495,125 @@
     setInterval(render, 60 * 60 * 1000);
   }
 
+  /* ---------- API for the voice agent (js/voice.js) ---------- */
+  function matchProduct(name) {
+    var n = L.normalize(name);
+    return L.findProduct(name) || FW.PRODUCTS.filter(function (p) { return L.normalize(p.name) === n; })[0] || null;
+  }
+
+  function findByName(name) {
+    var n = L.normalize(name), q = String(name || "").toLowerCase().trim();
+    var hits = state.items.filter(function (it) {
+      var lower = it.name.toLowerCase();
+      return L.normalize(it.name) === n || lower === q || lower.indexOf(q) !== -1 || (q.length > 3 && q.indexOf(lower) !== -1);
+    }).sort(function (a, b) { return L.daysLeft(a.expiry) - L.daysLeft(b.expiry); });
+    return hits[0] || null;
+  }
+
+  FW.app = {
+    getItems: function () { return state.items.slice(); },
+    addItem: function (o) {
+      var raw = String(o.name || "").trim();
+      if (!raw) return null;
+      var p = matchProduct(raw);
+      var unit = o.unit || (p ? p.unit : "units");
+      var qty = Number(o.qty) > 0 ? Number(o.qty) : (unit === "g" ? 250 : unit === "ml" ? 1000 : 1);
+      var days = typeof o.expiresInDays === "number" ? Math.round(o.expiresInDays) : (p ? p.shelf : 7);
+      var it = { id: uid(), name: p ? p.name : cap(raw), qty: qty, unit: unit, expiry: L.addDays(days),
+        category: p ? p.category : "Other", added: L.todayISO() };
+      state.items.push(it);
+      persist();
+      toast("🎙️ " + emojiFor(it.name, it.category) + " " + it.name + " added");
+      return it;
+    },
+    useItem: function (name, amount) {
+      var it = findByName(name);
+      if (!it) return null;
+      if (Number(amount) > 0 && Number(amount) < Number(it.qty)) {
+        it.qty = Number(it.qty) - Number(amount);
+        persist();
+        toast("🎙️ " + it.name + ": " + fmtQty(it) + " left");
+        return { updated: it.name, left: it.qty, unit: it.unit };
+      }
+      removeItem(it.id);
+      return { removed: it.name };
+    },
+    showScreen: showScreen
+  };
+
+  /* ---------- Voice assistant sheet ---------- */
+  function bindVoice() {
+    var vd = $("#voice-dialog");
+    if (!vd || !FW.voice) return;
+    var log = $("#voice-log"), orb = $("#voice-orb"), status = $("#voice-status"), toggle = $("#voice-toggle");
+    var bubbles = {};
+
+    function addBubble(who, text, id) {
+      var b = document.createElement("div");
+      b.className = "bubble " + who;
+      b.textContent = text;
+      log.appendChild(b);
+      log.scrollTop = log.scrollHeight;
+      if (id) bubbles[id] = b;
+      $("#voice-examples").hidden = true;
+      return b;
+    }
+
+    FW.voice.on(function (e) {
+      if (e.kind === "state") {
+        orb.dataset.state = e.state;
+        status.textContent = e.text || "";
+        var live = FW.voice.isActive();
+        toggle.textContent = live ? "End conversation" : (e.state === "error" ? "Try again" : "Start talking");
+        toggle.classList.toggle("danger", live);
+        toggle.classList.toggle("primary", !live);
+      } else if (e.kind === "user") {
+        addBubble("user", e.text);
+      } else if (e.kind === "assistant-delta") {
+        var b = bubbles[e.id] || addBubble("assistant", "", e.id);
+        b.textContent += e.text || "";
+        log.scrollTop = log.scrollHeight;
+      } else if (e.kind === "assistant-done") {
+        if (e.text) (bubbles[e.id] || addBubble("assistant", "", e.id)).textContent = e.text;
+      } else if (e.kind === "tool") {
+        var labels = { get_fridge: "Checked your fridge", suggest_recipes: "Looked up recipes", get_recipe: "Opened a recipe",
+          add_item: "Added " + (e.args.name || "a product"), use_item: "Updated " + (e.args.name || "a product") };
+        addBubble("tool", "🔧 " + (labels[e.name] || e.name));
+      } else if (e.kind === "error") {
+        addBubble("tool", "⚠️ " + e.text);
+      }
+    });
+
+    $("#voice-btn").addEventListener("click", function () {
+      log.innerHTML = ""; bubbles = {};
+      $("#voice-examples").hidden = false;
+      orb.dataset.state = "idle";
+      toggle.disabled = false;
+      toggle.textContent = "Start talking";
+      toggle.classList.add("primary"); toggle.classList.remove("danger");
+      status.textContent = "Checking voice setup…";
+      vd.showModal();
+      FW.voice.checkAvailable().then(function (r) {
+        status.textContent = r.ok ? "Tap start and talk to me" : r.reason;
+        if (!r.ok) { orb.dataset.state = "error"; toggle.disabled = true; }
+      });
+    });
+    toggle.addEventListener("click", function () {
+      if (FW.voice.isActive()) FW.voice.stop(); else FW.voice.start();
+    });
+    $("#voice-examples").addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (!b) return;
+      if (!FW.voice.sendText(b.textContent.replace(/[“”"]/g, ""))) status.textContent = "Tap start first, then try an example.";
+    });
+    function closeVoice() { FW.voice.stop(); if (vd.open) vd.close(); }
+    $("#voice-close").addEventListener("click", closeVoice);
+    vd.addEventListener("close", function () { FW.voice.stop(); });
+    vd.addEventListener("click", function (e) { if (e.target === vd) closeVoice(); });
+  }
+
   fillStatics();
   bind();
+  bindVoice();
   render();
 })();
