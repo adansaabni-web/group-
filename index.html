@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2f7d4f">
+  <title>FridgeWise</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥗</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">🥗</span>
+        <div>
+          <h1>FridgeWise</h1>
+          <p class="tagline">What should I cook today?</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- FRIDGE SCREEN -->
+      <section id="screen-fridge" class="screen active" aria-labelledby="tab-fridge">
+        <div id="reminder" class="banner" hidden></div>
+
+        <div class="summary" id="summary"></div>
+
+        <button class="cta" id="cta-cook" type="button">
+          <span class="cta-emoji" aria-hidden="true">🍳</span>
+          <span>What Should I Cook Today?</span>
+        </button>
+
+        <div class="toolbar">
+          <input type="search" id="search" placeholder="Search your fridge…" aria-label="Search products">
+          <select id="sort" aria-label="Sort products">
+            <option value="category">By category</option>
+            <option value="expiry">By expiry date</option>
+          </select>
+        </div>
+
+        <div id="fridge-list"></div>
+
+        <div id="empty-state" class="empty" hidden>
+          <div class="empty-emoji" aria-hidden="true">🧊</div>
+          <h2>Your fridge is empty</h2>
+          <p>Add 2–3 products and you'll get a recipe idea right away.</p>
+          <div class="empty-actions">
+            <button class="btn primary" type="button" data-action="open-add">+ Add product</button>
+            <button class="btn" type="button" id="load-sample">Load sample fridge</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- COOK SCREEN -->
+      <section id="screen-cook" class="screen" aria-labelledby="tab-cook">
+        <h2 class="screen-title">What Should I Cook Today?</h2>
+        <p class="muted" id="cook-intro">Recipes ranked by what you have — items that expire soon come first.</p>
+        <div class="chips" role="group" aria-label="Filters">
+          <button class="chip" type="button" data-filter="ready" aria-pressed="false">✅ Ready now</button>
+          <button class="chip" type="button" data-filter="quick" aria-pressed="false">⏱ ≤ 20 min</button>
+          <button class="chip" type="button" data-filter="vegetarian" aria-pressed="false">🌱 Vegetarian</button>
+        </div>
+        <div id="recipe-list"></div>
+      </section>
+    </main>
+
+    <button class="fab" type="button" data-action="open-add" aria-label="Add product">+</button>
+
+    <nav class="tabbar" role="tablist">
+      <button role="tab" id="tab-fridge" class="tab active" data-screen="fridge" aria-selected="true">
+        <span aria-hidden="true">🧊</span>My Fridge
+      </button>
+      <button role="tab" id="tab-cook" class="tab" data-screen="cook" aria-selected="false">
+        <span aria-hidden="true">🍳</span>Cook
+      </button>
+    </nav>
+  </div>
+
+  <!-- ADD / EDIT MODAL -->
+  <dialog id="item-dialog" aria-labelledby="dialog-title">
+    <form id="item-form" method="dialog" autocomplete="off">
+      <h2 id="dialog-title">Add product</h2>
+
+      <label for="f-name">Product name</label>
+      <input id="f-name" name="name" list="product-suggestions" required placeholder="e.g. Cottage cheese">
+      <datalist id="product-suggestions"></datalist>
+
+      <div class="quick-picks" id="quick-picks" aria-label="Common products"></div>
+
+      <div class="row">
+        <div class="col">
+          <label for="f-qty">Quantity</label>
+          <input id="f-qty" name="qty" type="number" min="0" step="any" value="1" required>
+        </div>
+        <div class="col">
+          <label for="f-unit">Unit</label>
+          <select id="f-unit" name="unit">
+            <option value="units">units</option>
+            <option value="g">grams</option>
+            <option value="ml">ml</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="f-expiry">Expiry date</label>
+          <input id="f-expiry" name="expiry" type="date" required>
+        </div>
+        <div class="col">
+          <label for="f-category">Category</label>
+          <select id="f-category" name="category"></select>
+        </div>
+      </div>
+      <p class="hint" id="expiry-hint"></p>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn danger" id="f-delete" hidden>Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" id="f-cancel">Cancel</button>
+        <button type="submit" class="btn primary" id="f-save">Add</button>
+      </div>
+      <label class="keep-open" id="keep-open-wrap"><input type="checkbox" id="f-keep-open" checked> Keep adding more</label>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

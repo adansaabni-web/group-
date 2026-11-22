@@ -1,0 +1,16 @@
+.claude/
+FridgeWise.zip
+
+# Secrets / environment
+.env
+.env.*
+*.key
+*.pem
+
+# OS / editor files
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+node_modules/
