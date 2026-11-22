@@ -344,6 +344,45 @@ dialog.sheet::backdrop { background: rgba(20, 25, 22, .45); }
 #item-form .keep-open { display: flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 600; color: var(--muted); margin-top: 16px; }
 .sheet-actions { display: flex; gap: 8px; margin-top: 14px; }
 
+/* ---------- Voice assistant ---------- */
+.top-actions { display: flex; gap: 8px; align-items: center; }
+.voice-btn {
+  width: 46px; height: 46px; border-radius: 15px; border: 0; font-size: 22px;
+  background: var(--accent-soft); box-shadow: var(--shadow-sm);
+}
+.voice-btn:active { transform: scale(.95); }
+.voice-wrap { padding: 10px 18px calc(18px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
+.orb {
+  width: 120px; height: 120px; margin: 10px auto 8px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 44px; background: radial-gradient(circle at 35% 30%, #7fe0a8, var(--brand) 60%, var(--brand-strong));
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--brand) 40%, transparent); transition: transform .2s, filter .2s;
+}
+.orb[data-state="idle"] { filter: saturate(.6); }
+.orb[data-state="connecting"] { animation: spin-pulse 1.2s ease-in-out infinite; }
+.orb[data-state="listening"] { animation: breathe 2s ease-in-out infinite; }
+.orb[data-state="thinking"] { animation: breathe 0.9s ease-in-out infinite; filter: hue-rotate(40deg); }
+.orb[data-state="speaking"] {
+  background: radial-gradient(circle at 35% 30%, #ffc49a, var(--accent) 60%, #e0622a);
+  animation: talk .5s ease-in-out infinite alternate;
+}
+.orb[data-state="error"] { background: radial-gradient(circle at 35% 30%, #ffb3b3, var(--red) 70%); filter: none; }
+@keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes talk { from { transform: scale(1); } to { transform: scale(1.1); } }
+@keyframes spin-pulse { 0%,100% { transform: scale(.94); opacity: .7; } 50% { transform: scale(1); opacity: 1; } }
+.voice-status { text-align: center; color: var(--muted); font-weight: 700; margin: 4px 0 10px; min-height: 1.4em; }
+.voice-log { display: flex; flex-direction: column; gap: 6px; max-height: 34vh; overflow-y: auto; }
+.voice-log:empty { display: none; }
+.bubble { max-width: 85%; padding: 8px 12px; border-radius: 16px; font-size: 14px; font-weight: 600; }
+.bubble.user { align-self: flex-end; background: var(--brand); color: var(--brand-ink); border-bottom-right-radius: 6px; }
+.bubble.assistant { align-self: flex-start; background: var(--surface-2); border-bottom-left-radius: 6px; }
+.bubble.tool { align-self: center; background: none; color: var(--muted); font-size: 12px; padding: 2px 8px; }
+.voice-examples { display: flex; flex-direction: column; gap: 6px; }
+.voice-examples .sheet-label { margin-top: 4px; }
+.voice-examples button {
+  text-align: left; border: 0; background: var(--surface-2); border-radius: 14px; padding: 10px 14px; font-weight: 700; font-size: 14px;
+}
+.voice-sheet .btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+
 /* ---------- Toast ---------- */
 .toast {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(100px + env(safe-area-inset-bottom)); z-index: 20;

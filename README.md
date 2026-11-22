@@ -44,6 +44,29 @@ Press **What should I cook today?** and the app suggests a **cottage cheese pan 
 
 ---
 
+## 🎙️ Voice agent
+
+Tap the 🎙️ button and just talk: *"What can I cook in 20 minutes?"*, *"I bought milk and 6 eggs"*, *"I finished the tomatoes"*.
+
+It's built on the [OpenAI Realtime API](https://developers.openai.com/api/docs/guides/voice-agents) (speech-to-speech over WebRTC, model `gpt-realtime-2.1`). The agent uses tools that run on your fridge data: `get_fridge`, `suggest_recipes`, `get_recipe`, `add_item` and `use_item`.
+
+Voice needs the small local server, so that your API key never reaches the browser:
+
+1. Create a file called **`.env`** in the project folder containing:
+   ```
+   OPENAI_API_KEY=sk-...your key...
+   ```
+   `.env` is in `.gitignore`. **Never commit it.**
+2. Start the server (PowerShell 7):
+   ```bash
+   pwsh -File server/serve.ps1
+   ```
+3. Open **http://localhost:5178**.
+
+The server gives the browser a short-lived key (10 minutes) through `POST /token`. Everything else in the app still works without the server or a key.
+
+---
+
 ## 🧠 How recipe matching works
 
 The scoring lives in `js/logic.js` → `scoreRecipes()`:
