@@ -92,6 +92,8 @@ main { padding: 0 16px; }
   padding: 10px 12px; margin: 4px 0 12px; font-size: 14px;
 }
 .banner .close { margin-left: auto; background: none; border: 0; font-size: 18px; color: var(--muted); }
+.banner.welcome { border-style: solid; background: var(--brand-soft); border-color: transparent; }
+.welcome-heart { font-size: 20px; }
 
 /* ---------- Hero ("use it soon") ---------- */
 .hero {
