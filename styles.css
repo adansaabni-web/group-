@@ -383,6 +383,81 @@ dialog.sheet::backdrop { background: rgba(20, 25, 22, .45); }
 }
 .voice-sheet .btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
 
+/* ---------- Cook & win: chef card + lucky spin ---------- */
+.chef-card {
+  background: var(--surface); border-radius: var(--radius); padding: 14px; margin: 2px 0 14px; box-shadow: var(--shadow);
+  border: 1.5px solid transparent;
+}
+.chef-card.ready { border-color: var(--accent); background: var(--accent-soft); }
+.chef-top { display: flex; gap: 12px; align-items: center; }
+.chef-ico {
+  flex-shrink: 0; width: 50px; height: 50px; border-radius: 16px; display: grid; place-items: center;
+  font-size: 28px; background: var(--accent-soft);
+}
+.chef-card.ready .chef-ico { background: var(--surface); animation: wiggle 1.6s ease-in-out infinite; }
+@keyframes wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+.chef-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.chef-kicker { font-size: 12px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .05em; }
+.chef-text b { font-size: 17px; font-weight: 800; }
+.chef-text span { font-size: 13px; color: var(--muted); font-weight: 600; }
+.chef-dots { display: flex; gap: 6px; margin: 12px 0; }
+.chef-dots i { flex: 1; height: 8px; border-radius: 99px; background: var(--surface-2); }
+.chef-dots i.on { background: var(--accent); }
+.chef-btn {
+  width: 100%; border: 0; border-radius: 14px; padding: 11px 16px; font-weight: 800; font-size: 15px;
+  background: var(--surface-2); color: var(--text);
+}
+.chef-card.ready .chef-btn { background: var(--accent); color: #fff; }
+.chef-btn:active { transform: scale(.985); }
+
+.cooked-btn {
+  width: 100%; min-height: 44px; margin-top: 14px; border: 1.5px dashed var(--brand); border-radius: 14px;
+  background: var(--brand-soft); color: var(--brand); font-weight: 800; font-size: 15px;
+}
+.cooked-btn:active { transform: scale(.985); }
+.cooked-btn.done { border-style: solid; border-color: transparent; background: var(--surface-2); color: var(--muted); cursor: default; }
+
+.spin-wrap { padding: 10px 18px calc(18px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
+.spin-sub { margin: 0 0 6px; color: var(--muted); font-weight: 600; font-size: 14px; }
+.wheel-box { position: relative; width: 270px; height: 270px; margin: 14px auto 6px; }
+.wheel {
+  position: absolute; inset: 0; border-radius: 50%; border: 6px solid var(--surface); box-shadow: var(--shadow);
+  background: conic-gradient(
+    var(--accent-soft) 0 45deg, var(--green-soft) 0 90deg, var(--orange-soft) 0 135deg, var(--brand-soft) 0 180deg,
+    var(--accent-soft) 0 225deg, var(--green-soft) 0 270deg, var(--orange-soft) 0 315deg, var(--brand-soft) 0 360deg);
+  transition: transform 4s cubic-bezier(.12,.75,.15,1);
+}
+.wheel-label {
+  position: absolute; left: 50%; top: 50%; width: 58px; height: 64px; margin: -32px 0 0 -29px;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  transform: rotate(var(--a)) translateY(-84px);
+}
+.wheel-label b { font-size: 24px; line-height: 1.15; }
+.wheel-label small { font-size: 10px; font-weight: 800; color: var(--text); line-height: 1.1; }
+.wheel-pointer {
+  position: absolute; left: 50%; top: -10px; z-index: 2; width: 0; height: 0; margin-left: -13px;
+  border-left: 13px solid transparent; border-right: 13px solid transparent; border-top: 24px solid var(--red);
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+}
+.wheel-hub {
+  position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; z-index: 2;
+  border-radius: 50%; display: grid; place-items: center; font-size: 26px;
+  background: var(--surface); box-shadow: var(--shadow);
+}
+.spin-result { min-height: 3.2em; text-align: center; font-weight: 700; color: var(--muted); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; margin-top: 6px; }
+.spin-result.win { color: var(--text); animation: pop .35s ease; }
+.spin-result b { font-size: 19px; font-weight: 800; color: var(--accent); }
+.spin-result span { font-size: 14px; }
+.prize-emoji { font-size: 34px; }
+@keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: none; opacity: 1; } }
+.spin-sheet .btn:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+.prize-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.prize-list li {
+  display: flex; gap: 10px; align-items: center; background: var(--surface-2); border-radius: 12px;
+  padding: 8px 12px; font-weight: 700; font-size: 14px;
+}
+.prize-list small { margin-left: auto; color: var(--muted); font-weight: 600; }
+
 /* ---------- Toast ---------- */
 .toast {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(100px + env(safe-area-inset-bottom)); z-index: 20;

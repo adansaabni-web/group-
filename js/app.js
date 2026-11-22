@@ -2,6 +2,16 @@
 (function () {
   var L = FW.logic;
   var state = FW.storage.load();
+  // Cooking rewards (lucky spin). Older saved data has no "cooking" field yet.
+  var ck = state.cooking && typeof state.cooking === "object" ? state.cooking : {};
+  state.cooking = {
+    log: Array.isArray(ck.log) ? ck.log : [],
+    spinsUsed: Number(ck.spinsUsed) || 0,
+    bonusSpins: Number(ck.bonusSpins) || 0,
+    prizes: Array.isArray(ck.prizes) ? ck.prizes : []
+  };
+  var wheelTurn = 0;                // current wheel rotation in degrees
+  var spinning = false;
   var listFilter = null;            // null | "orange" | "red"
   var sortMode = "category";        // "category" | "expiry"
   var recipeFilters = {};           // ready / quick / vegetarian
@@ -164,7 +174,31 @@
     return '<li class="ing ' + cls + '">' + esc(label) + '</li>';
   }
 
+  // Chef rewards card at the top of the Cook screen: every few cooked dishes earn a lucky spin.
+  function renderChefCard() {
+    var s = L.cookStats(state.cooking);
+    var dots = "";
+    var filled = s.spins && !s.progress ? s.perSpin : s.progress; // a full bar right after earning a spin
+    for (var i = 0; i < s.perSpin; i++) dots += '<i class="' + (i < filled ? "on" : "") + '"></i>';
+    var left = s.perSpin - s.progress;
+    $("#chef-card").innerHTML =
+      '<div class="chef-top">' +
+        '<div class="chef-ico" aria-hidden="true">🎡</div>' +
+        '<div class="chef-text">' +
+          '<div class="chef-kicker">Cook &amp; win</div>' +
+          '<b>' + (s.dishes ? s.dishes + ' dish' + (s.dishes > 1 ? 'es' : '') + ' cooked' : 'Cook a recipe to start') + '</b>' +
+          '<span>' + (s.spins ? 'You have ' + s.spins + ' spin' + (s.spins > 1 ? 's' : '') + ' ready!' :
+            left + ' more dish' + (left > 1 ? 'es' : '') + ' to your next lucky spin') + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="chef-dots" role="img" aria-label="' + s.progress + ' of ' + s.perSpin + ' dishes to the next spin">' + dots + '</div>' +
+      '<button type="button" class="chef-btn" data-action="open-spin">' +
+        (s.spins ? '🎡 Spin the wheel (' + s.spins + ')' : '🎡 See the prizes') + '</button>';
+    $("#chef-card").classList.toggle("ready", s.spins > 0);
+  }
+
   function renderRecipes() {
+    renderChefCard();
     var results = L.scoreRecipes(state.items).filter(function (r) {
       if (recipeFilters.ready && r.missingRequired > 0) return false;
       if (recipeFilters.quick && r.recipe.minutes > 20) return false;
@@ -213,6 +247,9 @@
           '<div class="ing-label">From your fridge</div><ul class="ing-list">' + haveChips + '</ul>' +
           (missChips ? '<div class="ing-label">You\'ll need</div><ul class="ing-list">' + missChips + '</ul>' : '') +
           (stapleChips ? '<div class="ing-label">Pantry basics</div><ul class="ing-list">' + stapleChips + '</ul>' : '') +
+          (L.cookedToday(state.cooking, r.recipe.id)
+            ? '<button type="button" class="cooked-btn done" disabled>✅ Cooked today</button>'
+            : '<button type="button" class="cooked-btn" data-cooked="' + esc(r.recipe.id) + '">🍳 I cooked this!</button>') +
         '</div>' +
         '<details><summary>How to make it</summary><ol>' +
           r.recipe.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join("") +
@@ -418,6 +455,99 @@
     }
   }
 
+  /* ---------- Cook & win: lucky spin ---------- */
+  // A suggested recipe counts once per day, so tapping twice doesn't farm spins.
+  function cookRecipe(id) {
+    if (L.cookedToday(state.cooking, id)) return;
+    var before = L.cookStats(state.cooking).spins;
+    var entry = { id: id, date: L.todayISO() };
+    state.cooking.log.push(entry);
+    persist();
+    var s = L.cookStats(state.cooking);
+    var undo = function () {
+      var i = state.cooking.log.indexOf(entry);
+      if (i !== -1) state.cooking.log.splice(i, 1);
+      persist();
+    };
+    if (s.spins > before) {
+      toast("🎉 " + s.dishes + " dishes cooked. You earned a lucky spin!", "Spin now", openSpin);
+    } else {
+      toast("👩‍🍳 Nice cooking! " + s.progress + "/" + s.perSpin + " to your next spin", "Undo", undo);
+    }
+  }
+
+  function buildWheel() {
+    var n = FW.SPIN_PRIZES.length, slice = 360 / n;
+    $("#wheel").innerHTML = FW.SPIN_PRIZES.map(function (p, i) {
+      return '<span class="wheel-label" style="--a:' + (i * slice + slice / 2) + 'deg">' +
+        '<b>' + p.emoji + '</b><small>' + esc(p.label) + '</small></span>';
+    }).join("");
+  }
+
+  function renderSpinSheet() {
+    var s = L.cookStats(state.cooking);
+    $("#spin-sub").textContent = s.spins
+      ? "You have " + s.spins + " spin" + (s.spins > 1 ? "s" : "") + ". Good luck, chef!"
+      : "Cook " + (s.perSpin - s.progress) + " more suggested dish" + (s.perSpin - s.progress > 1 ? "es" : "") +
+        " to earn a spin. Every " + s.perSpin + " dishes = 1 spin.";
+    var go = $("#spin-go");
+    go.disabled = spinning || !s.spins;
+    go.textContent = s.spins ? "Spin!" : "Cook to unlock 🔒";
+    var recent = state.cooking.prizes.slice(-5).reverse();
+    $("#prize-history").innerHTML = recent.length
+      ? '<p class="sheet-label">Your prizes</p><ul class="prize-list">' + recent.map(function (w) {
+          var p = FW.SPIN_PRIZES[w.i] || FW.SPIN_PRIZES[0];
+          return '<li><span aria-hidden="true">' + p.emoji + '</span>' + esc(p.label) + '<small>' + fmtDate(w.date) + '</small></li>';
+        }).join("") + '</ul>'
+      : "";
+  }
+
+  function openSpin() {
+    $("#spin-result").textContent = "";
+    $("#spin-result").classList.remove("win");
+    renderSpinSheet();
+    var d = $("#spin-dialog");
+    if (!d.open) d.showModal();
+  }
+
+  function spin() {
+    if (spinning || !L.cookStats(state.cooking).spins) return;
+    spinning = true;
+    var n = FW.SPIN_PRIZES.length, slice = 360 / n;
+    var idx = Math.floor(Math.random() * n);
+    var prize = FW.SPIN_PRIZES[idx];
+    // Use the spin and save the prize right away, so closing the sheet mid-spin can't lose it.
+    state.cooking.spinsUsed++;
+    if (prize.spin) state.cooking.bonusSpins++;
+    state.cooking.prizes.push({ i: idx, date: L.todayISO() });
+    persist();
+
+    // The pointer is at the top, so turn the wheel until the middle of slice idx is under it.
+    var land = (360 - (idx * slice + slice / 2)) % 360;
+    wheelTurn = wheelTurn - (wheelTurn % 360) + 360 * 5 + land;
+    $("#spin-result").textContent = "Spinning…";
+    $("#spin-result").classList.remove("win");
+    $("#spin-go").disabled = true;
+    $("#wheel").style.transform = "rotate(" + wheelTurn + "deg)";
+
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTimeout(function () {
+      spinning = false;
+      $("#spin-result").innerHTML = '<span class="prize-emoji" aria-hidden="true">' + prize.emoji + '</span>' +
+        '<b>' + esc(prize.label) + '</b><span>' + esc(prize.text) + '</span>';
+      $("#spin-result").classList.add("win");
+      renderSpinSheet();
+    }, reduce ? 50 : 4200);
+  }
+
+  function bindSpin() {
+    buildWheel();
+    var d = $("#spin-dialog");
+    $("#spin-go").addEventListener("click", spin);
+    $("#spin-close").addEventListener("click", function () { d.close(); });
+    d.addEventListener("click", function (e) { if (e.target === d) d.close(); });
+  }
+
   /* ---------- Sample data (Daniel scenario from the spec) ---------- */
   function loadSample() {
     var mk = function (name, qty, unit, days, category) {
@@ -441,6 +571,8 @@
       var t = e.target.closest("button");
       if (!t) return;
       if (t.dataset.action === "open-add") return openAdd();
+      if (t.dataset.action === "open-spin") return openSpin();
+      if (t.dataset.cooked) return cookRecipe(t.dataset.cooked);
       if (t.dataset.go) return showScreen(t.dataset.go);
       if (t.dataset.edit) return openEdit(t.dataset.edit);
       if (t.dataset.used) return removeItem(t.dataset.used);
@@ -615,5 +747,6 @@
   fillStatics();
   bind();
   bindVoice();
+  bindSpin();
   render();
 })();

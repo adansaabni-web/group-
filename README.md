@@ -21,6 +21,7 @@ FridgeWise is a simple web app that helps you manage the food in your fridge, ke
 | ✅ | **One-tap updates** | **−1** marks one unit as used, **✓** removes a product (with Undo), and tapping a product opens it for editing. |
 | 🔎 | **Filters** | Ready now (nothing missing) · Under 20 min · Vegetarian |
 | 👋 | **Gentle reminder** | A friendly nudge appears if you haven't updated your fridge for 3+ days. |
+| 🎡 | **Cook & win (lucky spin)** | Tap **🍳 I cooked this!** on a suggested recipe. Every 3 cooked dishes earn a spin of the lucky wheel with fun prizes (Chef badge, dessert treat, no-dishes pass, a free spin…). Each recipe counts once per day. |
 | 🌗 | **Light & dark mode** | Follows your device setting. Mobile-first design. |
 
 ---
