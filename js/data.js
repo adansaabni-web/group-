@@ -53,6 +53,31 @@ FW.PRODUCTS = [
   { name: "Frozen vegetables", category: "Frozen", shelf: 180, unit: "g" }
 ];
 
+// Emoji icons (UI only). Products by lowercase name, with a category fallback.
+FW.CATEGORY_EMOJI = {
+  "Dairy": "🥛", "Vegetables": "🥬", "Fruit": "🍎", "Meat & Fish": "🍗", "Eggs": "🥚",
+  "Bakery": "🍞", "Pantry": "🫙", "Sauces": "🥫", "Frozen": "🧊", "Other": "🛒"
+};
+FW.PRODUCT_EMOJI = {
+  "milk": "🥛", "cottage cheese": "🥣", "yellow cheese": "🧀", "feta cheese": "🧀", "cream cheese": "🧀",
+  "mozzarella": "🧀", "parmesan": "🧀", "yogurt": "🥣", "butter": "🧈", "cream": "🥛", "eggs": "🥚",
+  "tomatoes": "🍅", "cucumbers": "🥒", "onion": "🧅", "garlic": "🧄", "bell pepper": "🫑", "carrots": "🥕",
+  "potatoes": "🥔", "zucchini": "🥒", "spinach": "🥬", "lettuce": "🥬", "mushrooms": "🍄", "broccoli": "🥦",
+  "lemon": "🍋", "bananas": "🍌", "apples": "🍎", "avocado": "🥑", "chicken breast": "🍗", "ground beef": "🥩",
+  "salmon": "🐟", "tuna (canned)": "🐟", "bread": "🍞", "pita": "🫓", "tortillas": "🫓", "pasta": "🍝",
+  "rice": "🍚", "flour": "🌾", "oats": "🌾", "lentils": "🫘", "chickpeas (canned)": "🫘", "tomato sauce": "🥫",
+  "tahini": "🫙", "frozen peas": "🫛", "frozen vegetables": "🧊"
+};
+FW.RECIPE_EMOJI = {
+  "shakshuka": "🍳", "cheese-omelette": "🍳", "cottage-pan-pie": "🥧", "pasta-tomato-cheese": "🍝",
+  "pasta-tomato": "🍝", "israeli-salad": "🥗", "greek-salad": "🥗", "toast": "🥪", "quesadilla": "🌮",
+  "french-toast": "🍞", "pancakes": "🥞", "banana-oats": "🥣", "tuna-salad": "🥗", "tuna-pasta": "🍝",
+  "chicken-rice": "🍛", "chicken-stirfry": "🥘", "bolognese": "🍝", "salmon-potatoes": "🐟",
+  "lentil-soup": "🍲", "hummus-bowl": "🥙", "veg-fried-rice": "🍚", "mushroom-pasta": "🍝",
+  "spinach-omelette": "🍳", "zucchini-fritters": "🥞", "potato-omelette": "🥔", "yogurt-bowl": "🥣",
+  "avocado-toast": "🥑", "broccoli-cheese": "🥦"
+};
+
 // Map alternative spellings to a canonical ingredient name (all lowercase).
 FW.ALIASES = {
   "cottage": "cottage cheese",
