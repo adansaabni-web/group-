@@ -471,7 +471,14 @@
         try { sessionStorage.setItem("fw.reminderDismissed", "1"); } catch (err) {}
         $("#reminder").hidden = true;
       }
+      if (t.classList.contains("close") && t.closest("#welcome")) {
+        try { sessionStorage.setItem("fw.welcomeDismissed", "1"); } catch (err) {}
+        $("#welcome").hidden = true;
+      }
     });
+
+    // Welcome message: shown when the app opens, hidden for the rest of the session once dismissed.
+    try { $("#welcome").hidden = sessionStorage.getItem("fw.welcomeDismissed") === "1"; } catch (err) {}
 
     $("#load-sample").addEventListener("click", loadSample);
     $("#search").addEventListener("input", renderFridge);
