@@ -425,8 +425,8 @@ dialog.sheet::backdrop { background: rgba(10, 20, 45, .45); }
 .wheel {
   position: absolute; inset: 0; border-radius: 50%; border: 6px solid var(--surface); box-shadow: var(--shadow);
   background: conic-gradient(
-    var(--accent-soft) 0 45deg, var(--green-soft) 0 90deg, var(--orange-soft) 0 135deg, var(--brand-soft) 0 180deg,
-    var(--accent-soft) 0 225deg, var(--green-soft) 0 270deg, var(--orange-soft) 0 315deg, var(--brand-soft) 0 360deg);
+    var(--accent-soft) 0 45deg, var(--surface) 0 90deg, var(--surface-2) 0 135deg, var(--brand-soft) 0 180deg,
+    var(--accent-soft) 0 225deg, var(--surface) 0 270deg, var(--surface-2) 0 315deg, var(--brand-soft) 0 360deg);
   transition: transform 4s cubic-bezier(.12,.75,.15,1);
 }
 .wheel-label {
@@ -438,7 +438,7 @@ dialog.sheet::backdrop { background: rgba(10, 20, 45, .45); }
 .wheel-label small { font-size: 10px; font-weight: 800; color: var(--text); line-height: 1.1; }
 .wheel-pointer {
   position: absolute; left: 50%; top: -10px; z-index: 2; width: 0; height: 0; margin-left: -13px;
-  border-left: 13px solid transparent; border-right: 13px solid transparent; border-top: 24px solid var(--red);
+  border-left: 13px solid transparent; border-right: 13px solid transparent; border-top: 24px solid var(--brand);
   filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
 }
 .wheel-hub {
