@@ -32,6 +32,7 @@ Script load order matters: `data.js` → `storage.js` → `logic.js` → `app.js
 - **Recipe score** = % of required ingredients you have, plus 5 for each optional ingredient you have, plus an urgency bonus (+40 for an item expiring today, +30 for one expiring in 1–3 days).
 - Pantry basics (`FW.STAPLES`) are assumed to be at home and are never shown as missing.
 - Ingredient names are matched after `normalize()` using `FW.ALIASES`. Generic "cheese" can be satisfied by several kinds of cheese (`GENERIC` in `logic.js`).
+- **Cook & win (lucky spin):** "I cooked this!" on a recipe card logs it in `state.cooking` (once per recipe per day). Every `COOKS_PER_SPIN` (3) dishes earn a spin; `FW.logic.cookStats()` derives spins left. Prizes are `FW.SPIN_PRIZES` in `data.js` (keep 8, one per 45° slice). The spin uses up the spin and saves the prize before the animation starts.
 - **Retention ideas (§7.3):** autocomplete with default expiry dates, a recipe hint after 2–3 items, one-tap ✓ / −1 with Undo, and a gentle reminder after 3 days without updates. Keep these when changing the UI.
 
 ## Design system ("fresh & friendly")

@@ -64,6 +64,7 @@
 
       <!-- COOK SCREEN -->
       <section id="screen-cook" class="screen" aria-labelledby="tab-cook">
+        <div id="chef-card" class="chef-card"></div>
         <p class="lead" id="cook-intro">Ranked by what you have. Food that expires soon comes first.</p>
         <div class="chips" role="group" aria-label="Filters">
           <button class="chip" type="button" data-filter="ready" aria-pressed="false">✅ Ready now</button>
@@ -174,6 +175,28 @@
       <div class="sheet-actions">
         <button type="button" class="btn primary wide" id="voice-toggle">Start talking</button>
       </div>
+    </div>
+  </dialog>
+
+  <!-- LUCKY SPIN SHEET (rewards for cooking suggested recipes) -->
+  <dialog id="spin-dialog" class="sheet spin-sheet" aria-labelledby="spin-title">
+    <div class="spin-wrap">
+      <div class="grabber" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <h2 id="spin-title">Lucky spin</h2>
+        <button type="button" class="icon-close" id="spin-close" aria-label="Close">✕</button>
+      </div>
+      <p class="spin-sub" id="spin-sub"></p>
+      <div class="wheel-box">
+        <div class="wheel-pointer" aria-hidden="true"></div>
+        <div class="wheel" id="wheel" aria-hidden="true"></div>
+        <div class="wheel-hub" aria-hidden="true">🍳</div>
+      </div>
+      <div class="spin-result" id="spin-result" role="status" aria-live="polite"></div>
+      <div class="sheet-actions">
+        <button type="button" class="btn primary wide" id="spin-go">Spin!</button>
+      </div>
+      <div id="prize-history"></div>
     </div>
   </dialog>
 

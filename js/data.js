@@ -196,3 +196,16 @@ FW.RECIPES = [
     ingredients: [{ n: "broccoli" }, { n: "cheese" }, { n: "cream", opt: true }, { n: "milk", opt: true }, { n: "eggs", opt: true }],
     steps: ["Blanch broccoli florets 3 min.", "Place in a dish, pour over cream (or milk + egg), top with cheese.", "Bake at 200°C for 15–20 min."] }
 ];
+
+/* Lucky spin prizes. Cooking suggested recipes earns spins (see FW.logic.cookStats).
+   Prizes are small, fun self-rewards. "spin: true" gives an extra spin. Keep 8 so each slice is 45°. */
+FW.SPIN_PRIZES = [
+  { emoji: "🏅", label: "Chef badge", text: "You earned the Chef badge. Wear it with pride!" },
+  { emoji: "🍰", label: "Dessert treat", text: "Treat yourself to a dessert tonight. You cooked for it!" },
+  { emoji: "🎵", label: "DJ tonight", text: "You choose the music for the next dinner." },
+  { emoji: "🎁", label: "Free spin", text: "Lucky you: an extra spin!", spin: true },
+  { emoji: "🧽", label: "No dishes", text: "Someone else does the dishes this time." },
+  { emoji: "🌶️", label: "Spice quest", text: "Challenge: cook your next dish with a spice you've never tried." },
+  { emoji: "👑", label: "Kitchen star", text: "You're the Kitchen Star of the week!" },
+  { emoji: "☕", label: "Coffee break", text: "Take a cosy coffee or tea break. You deserve it." }
+];

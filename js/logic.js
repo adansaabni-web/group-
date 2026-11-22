@@ -5,6 +5,7 @@ window.FW = window.FW || {};
 
 FW.logic = (function () {
   var SOON_DAYS = 3; // spec §6.3: "close to expiry" = 3 days or less
+  var COOKS_PER_SPIN = 3; // every 3 cooked dishes earn one spin of the lucky wheel
 
   // Generic ingredients that several specific products can satisfy.
   var GENERIC = {
@@ -150,6 +151,23 @@ FW.logic = (function () {
     return results;
   }
 
+  /* Cooking rewards. cooking = { log: [{ id, date }], spinsUsed, bonusSpins, prizes: [{ i, date }] } */
+  function cookedToday(cooking, recipeId) {
+    var t = todayISO();
+    return cooking.log.some(function (c) { return c.id === recipeId && c.date === t; });
+  }
+
+  function cookStats(cooking) {
+    var dishes = cooking.log.length;
+    var earned = Math.floor(dishes / COOKS_PER_SPIN) + (cooking.bonusSpins || 0);
+    return {
+      dishes: dishes,
+      spins: Math.max(0, earned - (cooking.spinsUsed || 0)),
+      progress: dishes % COOKS_PER_SPIN, // dishes towards the next spin
+      perSpin: COOKS_PER_SPIN
+    };
+  }
+
   function findProduct(name) {
     var s = String(name || "").toLowerCase().trim();
     for (var i = 0; i < FW.PRODUCTS.length; i++) {
@@ -160,6 +178,9 @@ FW.logic = (function () {
 
   return {
     SOON_DAYS: SOON_DAYS,
+    COOKS_PER_SPIN: COOKS_PER_SPIN,
+    cookedToday: cookedToday,
+    cookStats: cookStats,
     todayISO: todayISO,
     addDays: addDays,
     daysLeft: daysLeft,
